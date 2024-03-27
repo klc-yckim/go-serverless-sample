@@ -9,11 +9,9 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -tags lambda.norpc -a -installsuffix cgo -o main ./cmd/app
 
-FROM amazonlinux:2
-
-WORKDIR /root/
+FROM public.ecr.aws/lambda/provided:al2023
 
 COPY --from=builder /go/src/app/main .
 
